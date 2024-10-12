@@ -352,10 +352,11 @@
 			</div>
 			<div class="w3_newsletter_footer_grids">
 				<div class="w3_newsletter_footer_grid_left">
-					<form action="#" method="post">
+					<form name="submit-to-google-sheet" action="#" method="post">
 						<input type="email" name="Email" placeholder="Enter Your Email...." required="">
 						<input type="submit" value="SEND">
 					</form>
+					<span id="msg" class="success-message" style="color: #2962FF; display: none;"></span> <!-- This will display the success message in green -->
 				</div>
 			</div>
 			<div class="w3ls_address_mail_footer_grids">
@@ -442,5 +443,40 @@
 			});
 	</script>
 <!-- //here ends scrolling icon -->
+
+
+<!-- //Email Subscription -->
+<script>
+	const scriptURL = 'https://script.google.com/macros/s/AKfycbyaFVG4FA09GxzV8e3zQ99Tp1yk_zdocdvK8rzPU6NxpFqRGm-tAsrdWlcKrnOoN8XWBw/exec';
+	const form = document.forms['submit-to-google-sheet'];
+	const msg = document.getElementById("msg");
+  
+	form.addEventListener('submit', e => {
+		e.preventDefault();
+		
+		// Show the success message immediately
+		msg.innerHTML = "Thanks for Subscribing";
+		msg.style.display = "block"; // Make the message visible
+	
+		// Hide the message after 2 seconds
+		setTimeout(() => {
+			msg.style.display = "none"; // Hide the message
+		}, 2000); // 2000 milliseconds = 2 seconds
+
+		// Send the data to Google Sheets
+		fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+			.then(response => {
+				console.log('Success!', response);
+				form.reset(); // Reset the form
+			})
+			.catch(error => {
+				console.error('Error!', error.message);
+				msg.innerHTML = "There was an error. Please try again.";
+				msg.style.color = "red"; // Optional: Change color to red on error
+			});
+	});
+</script>
+
+
 </body>
 </html>
